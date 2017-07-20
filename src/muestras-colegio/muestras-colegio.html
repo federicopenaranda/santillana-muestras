@@ -1,0 +1,151 @@
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Sistema de Administración de Muestras - Santillana</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#" ui-sref="salir">Salir</a></li>
+            <!-- <li><a href="#">Perfil</a></li>
+            <li><a href="#">Ayuda</a></li> -->
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a ui-sref="dashboard" href="#">Inicio<span class="sr-only">(current)</span></a></li>
+            <li><a ui-sref="muestras-delegado" href="#" ng-if="privilegios.menu_muestras_delegado">Muestras a Delegados</a></li>
+            <li class="dropdown active">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" ng-if="privilegios.menu_entrega_colegio">Muestras a Colegio <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a ui-sref="muestras-colegio" href="#">Listado de Entregas</a></li>
+                <li><a ui-sref="muestras-colegio-cliente" href="#">Listado por Cliente</a></li>
+                <li><a ui-sref="crear-muestra-colegio" href="#" ng-if="privilegios.menu_crear_entrega_colegio">Crear Entrega</a></li>
+              </ul>
+            </li>
+            <li><a ui-sref="inventario" href="#" ng-if="privilegios.menu_inventario">Inventario</a></li>
+            <li><a href="#" ng-if="privilegios.menu_legalizaciones">Legalizaciones</a></li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" ng-if="privilegios.menu_adm">Administración<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a ui-sref="importar-muestras-delegado" href="#" ng-if="privilegios.menu_adm_importacion_muestras">Imp. Muestras de Delegados</a></li>
+                <li><a ui-sref="sincroniza-productos" href="#" ng-if="privilegios.menu_adm_sincronizar_productos">Sincronizar Productos</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Entrega de Muestras a Colegios</h1>
+
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Cliente</th>
+                  <th>Fecha de Entrega</th>
+                  <th>Profesor</th>
+                  <th>Posición</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="entregaColegio in entregasColegio">
+                  <td>{{entregaColegio.codigo_entrega_colegio}}</td>
+                  <td>{{entregaColegio.nombre_cliente}} ({{entregaColegio.codigo_cliente_nav}})</td>
+                  <td>{{entregaColegio.fecha_entrega_colegio | date:'yyyy-MM-dd'}}</td>
+                  <td>{{entregaColegio.responsable_entrega_colegio}}</td>
+                  <td>{{entregaColegio.posicion_entrega_colegio}}</td>
+                  <td>{{entregaColegio.estado_entrega_colegio}}</td>
+                  <td>
+                    <button class="btn btn-info btn-sm" ng-click="onColegioDetallesClick(entregaColegio)">Ver Detalles</button>
+                    <button class="btn btn-info btn-sm" ng-click="onImprimirColegioDetallesClick(entregaColegio)">Imprimir</button>
+                    <button class="btn btn-info btn-sm" ng-click="onEditarEntregaColegioClick(entregaColegio)" ng-if="privilegios.muestras_delegado_editar">Editar</button>
+                    <button class="btn btn-danger btn-sm" ng-click="onEliminaMuestraColegio(entregaColegio)" ng-if="privilegios.muestras_delegado_eliminar">Eliminar</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+
+          <h2 class="page-header">Detalle de Muestras a Colegios</h2>
+
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Código de Libro</th>
+                  <th>Nombre de Libro</th>
+                  <th>Cant. Entregada</th>
+                  <th>Cant. Devuelta</th>
+                  <th>Cant. Legalizada</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="entregaColegioDetalle in entregasColegioDetalle">
+                  <td>{{entregaColegioDetalle.codigo_nav_item}}</td>
+                  <td>{{entregaColegioDetalle.nombre_nav_item}}</td>
+                  <td>{{entregaColegioDetalle.cantidad_entrega_colegio_det}}</td>
+                  <td>
+
+                    <span ng-if="!entregaColegioDetalle.devolver">
+                        {{entregaColegioDetalle.cantidad_devolucion_colegio_det}}
+                    </span>
+
+                    <form ng-submit="updateTask(entregaColegioDetalle)">
+                        <input size="2" ng-if="entregaColegioDetalle.devolver"
+                            ng-value="entregaColegioDetalle.cantidad_devolucion_colegio_det"
+                            ng-model="entregaColegioDetalle.cantidad_devolucion_colegio_det" />
+                    </form>
+
+                  </td>
+                  <td>
+
+                    <span ng-if="!entregaColegioDetalle.legalizar">
+                        {{entregaColegioDetalle.cantidad_legalizacion_colegio_det}}
+                    </span>
+
+                    <form ng-submit="updateTask(entregaColegioDetalle)">
+                        <input size="2" ng-if="entregaColegioDetalle.legalizar"
+                            ng-value="entregaColegioDetalle.cantidad_legalizacion_colegio_det"
+                            ng-model="entregaColegioDetalle.cantidad_legalizacion_colegio_det" />
+                    </form>
+
+                  </td>
+                  <td class="col-md-3">
+                    <button ng-if="!entregaColegioDetalle.devolver && !entregaColegioDetalle.legalizar" class="btn btn-info btn-xs" ng-click="onDevolver(entregaColegioDetalle)">Devolver</button>
+                    <button ng-if="!entregaColegioDetalle.legalizar && !entregaColegioDetalle.devolver" class="btn btn-success btn-xs" ng-click="onLegalizar(entregaColegioDetalle)">Legalizar</button>
+                    <button ng-if="entregaColegioDetalle.devolver" class="btn btn-primary" ng-click="guardarDevolucion(entregaColegioDetalle)">Guardar</button>
+                    <button ng-if="entregaColegioDetalle.legalizar" class="btn btn-primary" ng-click="guardarLegalizacion(entregaColegioDetalle)">Guardar</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+          
+
+        </div>
+      
+
+
+      </div>
+    </div>

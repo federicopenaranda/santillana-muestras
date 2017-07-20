@@ -1,0 +1,207 @@
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Sistema de Administración de Muestras - Santillana</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#" ui-sref="salir">Salir</a></li>
+            <!-- <li><a href="#">Perfil</a></li>
+            <li><a href="#">Ayuda</a></li> -->
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a ui-sref="dashboard" href="#">Inicio<span class="sr-only">(current)</span></a></li>
+            <li><a ui-sref="muestras-delegado" href="#" ng-if="privilegios.menu_muestras_delegado">Muestras a Delegados</a></li>
+            <li class="dropdown active">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" ng-if="privilegios.menu_entrega_colegio">Muestras a Colegio <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a ui-sref="muestras-colegio" href="#">Listado de Entregas</a></li>
+                <li><a ui-sref="muestras-colegio-cliente" href="#">Listado por Cliente</a></li>
+                <li><a ui-sref="crear-muestra-colegio" href="#" ng-if="privilegios.menu_crear_entrega_colegio">Crear Entrega</a></li>
+              </ul>
+            </li>
+            <li><a ui-sref="inventario" href="#" ng-if="privilegios.menu_inventario">Inventario</a></li>
+            <li><a href="#" ng-if="privilegios.menu_legalizaciones">Legalizaciones</a></li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" ng-if="privilegios.menu_adm">Administración<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a ui-sref="importar-muestras-delegado" href="#" ng-if="privilegios.menu_adm_importacion_muestras">Imp. Muestras de Delegados</a></li>
+                <li><a ui-sref="sincroniza-productos" href="#" ng-if="privilegios.menu_adm_sincronizar_productos">Sincronizar Productos</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+
+
+
+      
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Crear Entrega de Muestras a Colegios</h1>
+
+
+          <div class="row">
+
+
+
+
+
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav navbar-right">
+                <li class="btn-success"><a href="#" ng-click="guardarEntregaColegio()">Guardar</a></li>
+                <li class="btn-danger"><a href="#">Cancelar</a></li>
+              </ul>
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+        </nav>
+
+
+
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label for="inputEmail3" class="col-sm-2 control-label">Fecha</label>
+                
+            <div class="col-md-6">
+              <p class="input-group">
+                <input type="text" class="form-control" uib-datepicker-popup ng-model="fechaEntrega" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                <span class="input-group-btn">
+                  <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+                </span>
+              </p>
+            </div>
+              
+
+          </div>
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-2 control-label">Colegio</label>
+            <div class="col-sm-10">
+              <select class="form-control" ng-model="cliente" ng-options="item.id_cliente as '(' + item.codigo_cliente_nav + ')' + ' ' + item.nombre_cliente for item in testAccounts">
+                  <option value="">Seleccione el Cliente</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="responsable_entrega_colegio" class="col-sm-2 control-label">Responsable</label>
+            <div class="col-sm-10">
+              <input type="text" ng-model="responsable" class="form-control" id="responsable_entrega_colegio" placeholder="Nombre del Responsable">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="posicion_entrega_colegio" class="col-sm-2 control-label">Posición</label>
+            <div class="col-sm-10">
+              <input type="text" ng-model="posicion" class="form-control" id="posicion_entrega_colegio" placeholder="Posición del Responsable">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="telefono_entrega_colegio" class="col-sm-2 control-label">Teléfono</label>
+            <div class="col-sm-10">
+              <input type="text" ng-model="telefono" class="form-control" id="telefono_entrega_colegio" placeholder="Teléfono del Responsable">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="observaciones_entrega_colegio" class="col-sm-2 control-label">Observaciones</label>
+            <div class="col-sm-10">
+              <textarea rows="1" ng-model="observaciones" class="form-control" id="observaciones_entrega_colegio"></textarea>
+            </div>
+          </div>
+
+
+        </form>
+
+        </div>
+
+
+        <hr>
+
+        <h3 class="page-header">Libros de la Entrega</h2>
+
+          <div class="row">
+
+            <form autocomplete="off" name="librosForm" class="form-inline" ng-submit="creaItemColegio(itemSeleccionado)">
+
+              <div class="form-group custom-popup-wrapper">
+                <label>Libros</label>
+                <input type="text" size="50" id="buscaItem" name="buscaItem"  ng-model="buscaItem" placeholder="Busque un item..." class="form-control" required>
+
+                <div ng-repeat="item in itemsSugeridos" style="z-index: -100;">
+                  <div ng-click="onSeleccionaItemClick(item)">{{item.nombre_nav_item}}</div>
+                </div>
+
+              </div>
+
+              <div class="form-group">
+                <label>Cantidad:</label>
+                <input type="number" ng-maxlength="2" ng-minlength="1" class="form-control" id="itemCantidad" name="itemCantidad" ng-model="itemCantidad" min="1" max="{{maxCantidad}}" required>
+              </div>
+
+              <button ng-disabled="!librosForm.itemCantidad.$valid || !librosForm.buscaItem.$valid" type="submit" class="btn btn-success">Añadir Libro</button>
+
+            </form>
+
+          </div>
+
+
+
+
+          <div class="table-responsive">
+            <table class="table table-striped" id="formulario-entrega-colegio">
+              <thead>
+                <tr>
+                  <th rowspan="3">Libro</th>
+                  <th colspan="1" id="cantidades">Cantidades</th>
+                </tr>
+                <tr>
+                  <th>Entrega</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="itemSeleccionado in itemsSeleccionados track by $index">
+                  <th>{{itemSeleccionado.nombre_nav_item}}</th>
+                  <th>{{itemSeleccionado.cantidad_entrega_colegio_det}}</th>
+                  <th><button class="btn btn-danger" ng-click="eliminaItemEntregaColegio($index)">Quitar</button></th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+
+
+          
+      
+
+
+      </div>
+    </div>
+
+
+
+
